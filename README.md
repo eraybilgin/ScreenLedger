@@ -41,12 +41,13 @@ This is a **personal-use** tool. It does not send your activity history to an on
 - **Timeline:** When an app or tab changed state, so you can answer “at what times?” rather than seeing only a daily total.
 - **Date ranges:** Today, yesterday, this calendar week (starting Monday), the last seven days, this month, the last three months, all recorded time, or your own date range.
 - **Detailed Excel export:** App totals, pages within apps, daily/hourly detail, tab times, and a detailed timeline are organized into separate worksheets for the selected period.
+- **Interface languages:** Use **TR / EN** at the top right of the report or sign-in page to switch between Turkish and English. The choice is remembered in that browser. Activity records are not changed by switching languages.
 
 ### Quick start
 
 **Requirements:** A 64-bit Windows computer. The downloadable installer includes its own Python runtime; you do **not** need to install Python, run a terminal, or have administrator rights.
 
-1. Open the [latest release](https://github.com/eraybilgin/ScreenLedger/releases/latest) and download `ScreenLedger-Setup-0.1.0.exe` (or the newest `ScreenLedger-Setup-*.exe`). Use the **Releases** download, not **Code → Download ZIP**; the ZIP contains source code, not the ready-to-run installer.
+1. Open the [latest release](https://github.com/eraybilgin/ScreenLedger/releases/latest) and download its `ScreenLedger-Setup-*.exe` installer. Use the **Releases** download, not **Code → Download ZIP**; the ZIP contains source code, not the ready-to-run installer.
 2. Run the installer. Leave **Start tracking when I sign in to Windows** selected if you want automatic tracking after each sign-in. The installer places program files under your Windows user profile, without requesting administrator access.
 3. At the end, select **Open ScreenLedger report**, or use **Start menu → ScreenLedger** later. The report opens at `http://127.0.0.1:8777/`. On first use, set a non-empty report password and keep it somewhere safe.
 4. Browse **Apps**, **Pages**, **Sites**, and the time detail; choose a date range and use **Download Excel** to save the detailed report. Closing the browser tab does not stop tracking.
@@ -136,12 +137,13 @@ Bu proje **kişisel kullanım** içindir. Kayıtları çevrimiçi bir hesaba gö
 - **Zaman çizelgesi:** Uygulama veya sekmenin durumunun gün içinde ne zaman değiştiği. Böylece yalnızca “2 saat” değil, “hangi saat aralıklarında?” sorusuna da bakabilirsiniz.
 - **Esnek tarihler:** Bugün, dün, pazartesiden başlayan bu hafta, son yedi gün, bu ay, son üç ay, tüm kayıtlar veya seçtiğiniz iki tarih.
 - **Ayrıntılı Excel indirmesi:** Seçilen aralık için uygulama toplamları, uygulama içindeki sayfalar, gün ve saat ayrıntıları, sekme saatleri ve zaman çizelgesi ayrı çalışma sayfalarında yer alır.
+- **Arayüz dili:** Raporun veya giriş ekranının sağ üstündeki **TR / EN** düğmelerinden Türkçe ile İngilizce arasında geçiş yapabilirsiniz. Seçim o tarayıcıda hatırlanır; dil değişikliği kullanım kayıtlarını değiştirmez.
 
 ### Hızlı başlangıç
 
 **Gerekenler:** 64 bit Windows bilgisayar. Hazır kurulum paketi Python çalışma ortamını içerir; ayrıca Python kurmanız, komut yazmanız veya yönetici izni vermeniz gerekmez.
 
-1. [En yeni sürüm sayfasını](https://github.com/eraybilgin/ScreenLedger/releases/latest) açıp `ScreenLedger-Setup-0.1.0.exe` dosyasını (veya daha yeni `ScreenLedger-Setup-*.exe` sürümünü) indirin. **Releases/Sürümler** bölümündeki kurulum dosyasını seçin; **Code → Download ZIP** hazır kurulum değil, kaynak kodudur.
+1. [En yeni sürüm sayfasını](https://github.com/eraybilgin/ScreenLedger/releases/latest) açıp oradaki `ScreenLedger-Setup-*.exe` kurulum dosyasını indirin. **Releases/Sürümler** bölümündeki kurulum dosyasını seçin; **Code → Download ZIP** hazır kurulum değil, kaynak kodudur.
 2. Kurulum dosyasını çalıştırın. Windows hesabınıza her girişte takibin kendiliğinden başlamasını istiyorsanız **Windows oturumu açıldığında takibi başlat** seçeneğini açık bırakın. Kurulum yönetici izni istemez ve program dosyalarını kendi kullanıcı alanınıza yerleştirir.
 3. Kurulum sonunda **ScreenLedger raporunu aç** seçeneğini işaretleyin veya daha sonra **Başlat menüsü → ScreenLedger** yolunu kullanın. Rapor `http://127.0.0.1:8777/` adresinde açılır. İlk girişte boş olmayan bir rapor şifresi belirleyip güvenli yerde saklayın.
 4. **Uygulamalar**, **Sayfalar**, **Siteler** ve saat ayrıntılarını inceleyin; tarih seçip **Excel indir** ile ayrıntılı kayıtları alın. Tarayıcıdaki rapor sekmesini kapatmak takibi durdurmaz.

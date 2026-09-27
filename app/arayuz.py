@@ -37,6 +37,9 @@ GIRIS_SAYFASI = r"""<!doctype html><html lang="tr"><head><meta charset="utf-8">
 *{box-sizing:border-box}
 body{font:16px/1.5 system-ui;background:radial-gradient(circle at 15% 15%,#203e70 0,transparent 35%),radial-gradient(circle at 90% 85%,#153d4a 0,transparent 32%),#0c111c;color:var(--yazi);min-height:100vh;display:grid;place-items:center;margin:0;padding:24px}
 main{width:min(100%,440px);background:#172232e8;border:1px solid #52698766;box-shadow:0 28px 80px #0007;padding:36px;border-radius:24px;animation:giris .5s both}
+.dil-secimi{position:fixed;right:24px;top:18px;display:flex;gap:5px;z-index:2}
+.dil-secimi button{width:auto;margin:0;padding:6px 10px;background:#172232;color:#cbd5e1;border:1px solid #53647b;box-shadow:none;font-size:13px}
+.dil-secimi button.secili{color:#fff;border-color:#77a9ff;background:#28466f}
 .amblem{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#7eb1ff,#5b7bf0);color:#101a2a;font-weight:800;box-shadow:0 10px 30px #5485ff55;margin-bottom:22px}
 h1{font-size:30px;letter-spacing:-.04em;line-height:1.1;margin:0 0 12px}
 input,button{width:100%;padding:13px 15px;margin:8px 0;border-radius:12px;font:inherit}
@@ -48,24 +51,57 @@ p{color:var(--soluk);line-height:1.55}#durum{color:#ffc3c3;min-height:24px;margi
 @keyframes giris{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){main{animation:none}button{transition:none}}
 </style></head>
-<body><main><div class="amblem" aria-hidden="true">E</div><h1>Ekran Takip</h1><p id="aciklama"></p><form id="form">
+<body><div class="dil-secimi" role="group" aria-label="Language / Dil">
+<button type="button" data-dil="tr">TR</button><button type="button" data-dil="en">EN</button></div>
+<main><div class="amblem" aria-hidden="true">E</div><h1 id="girisBaslik">Ekran Takip</h1><p id="aciklama"></p><form id="form">
 <input id="sifre" type="password" autocomplete="current-password" placeholder="Şifre" required>
 <input id="tekrar" type="password" autocomplete="new-password" placeholder="Şifreyi tekrar yazın" hidden>
 <button id="dugme" type="submit">Giriş yap</button></form><p id="durum"></p></main>
 <script>
 const ilk = __ILK_KURULUM__;
+const girisCeviri={
+  'Ekran Takip':'ScreenLedger','Şifre':'Password','Şifreyi tekrar yazın':'Repeat password',
+  'Giriş yap':'Sign in','Şifre oluştur':'Create password',
+  'Raporu açmak için istediğiniz şifreyi oluşturun.':'Create a password to open your report.',
+  'Raporunuzu açmak için şifrenizi yazın.':'Enter your password to open your report.',
+  'Şifreler eşleşmiyor.':'Passwords do not match.',
+  'Giriş yapılamadı':'Sign-in failed.','Şifre yanlış':'Incorrect password.',
+  'Şifre boş olamaz':'Password cannot be empty.',
+  'Şifre zaten oluşturulmuş':'A password has already been created.',
+  'Çok fazla yanlış deneme. Bir dakika sonra tekrar deneyin':'Too many attempts. Try again in one minute.',
+  'Şifre dosyası bozuk':'The password file is damaged.',
+  'Şifre gerekli':'A password is required.','Şifre geçersiz':'Invalid password.',
+  'İstek reddedildi':'Request denied.','İstek boyutu geçersiz':'Invalid request size.'
+};
+let dil='tr';try{dil=localStorage.getItem('screenledger-language')==='en'?'en':'tr';}catch(e){}
+function gm(metin){return dil==='en'?(girisCeviri[metin]||metin):metin;}
 const aciklama=document.getElementById('aciklama'), tekrar=document.getElementById('tekrar');
-if(ilk){aciklama.textContent='Raporu açmak için istediğiniz şifreyi oluşturun.';
- tekrar.hidden=false;tekrar.required=true;document.getElementById('sifre').autocomplete='new-password';
- document.getElementById('dugme').textContent='Şifre oluştur';}
-else{aciklama.textContent='Raporunuzu açmak için şifrenizi yazın.';}
+function girisiCevir(){
+ document.documentElement.lang=dil;
+ document.title=gm('Ekran Takip')+' — '+(dil==='en'?'Sign in':'Giriş');
+ document.getElementById('girisBaslik').textContent=gm('Ekran Takip');
+ document.getElementById('sifre').placeholder=gm('Şifre');
+ tekrar.placeholder=gm('Şifreyi tekrar yazın');
+ aciklama.textContent=gm(ilk?'Raporu açmak için istediğiniz şifreyi oluşturun.':'Raporunuzu açmak için şifrenizi yazın.');
+ document.getElementById('dugme').textContent=gm(ilk?'Şifre oluştur':'Giriş yap');
+ document.querySelectorAll('[data-dil]').forEach(b=>{
+   b.classList.toggle('secili',b.dataset.dil===dil);
+   b.setAttribute('aria-pressed',String(b.dataset.dil===dil));
+ });
+}
+if(ilk){tekrar.hidden=false;tekrar.required=true;document.getElementById('sifre').autocomplete='new-password';}
+document.querySelectorAll('[data-dil]').forEach(b=>b.addEventListener('click',()=>{
+ dil=b.dataset.dil;try{localStorage.setItem('screenledger-language',dil);}catch(e){}
+ girisiCevir();document.getElementById('durum').textContent='';
+}));
+girisiCevir();
 document.getElementById('form').addEventListener('submit',async e=>{
  e.preventDefault();const sifre=document.getElementById('sifre').value;
- if(ilk&&sifre!==tekrar.value){document.getElementById('durum').textContent='Şifreler eşleşmiyor.';return;}
+ if(ilk&&sifre!==tekrar.value){document.getElementById('durum').textContent=gm('Şifreler eşleşmiyor.');return;}
  const dugme=document.getElementById('dugme');dugme.disabled=true;
  try{const r=await fetch(ilk?'/auth/kur':'/auth/gir',{method:'POST',
   headers:{'Content-Type':'application/json','X-Ekran-Form':'1'},body:JSON.stringify({sifre})});
-  const j=await r.json();if(!r.ok)throw new Error(j.hata||'Giriş yapılamadı');location.replace('/');
+  const j=await r.json();if(!r.ok)throw new Error(gm(j.hata||'Giriş yapılamadı'));location.replace('/');
  }catch(hata){document.getElementById('durum').textContent=hata.message;dugme.disabled=false;}
 });</script></body></html>"""
 
@@ -152,6 +188,7 @@ td.sag,th.sag{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .aciklama{display:flex;gap:16px;flex-wrap:wrap;color:var(--soluk);font-size:12px;
   margin:10px 2px 14px}
 .aciklama span{display:flex;align-items:center;gap:6px}
+.aciklama b{font-weight:normal}
 .nokta{width:10px;height:10px;border-radius:3px;display:inline-block}
 .bos{padding:44px;text-align:center;color:var(--soluk)}
 .dipnot{color:var(--soluk);font-size:12px;margin-top:18px;text-align:center}
@@ -163,6 +200,8 @@ body{background:radial-gradient(circle at 85% -10%,#c9dfff 0,transparent 34%),va
 h1{font-size:clamp(28px,4vw,42px);line-height:1.08;letter-spacing:-.045em;margin:0 0 10px}
 .ust .altbaslik{font-size:14px;margin:0;color:var(--soluk)}
 .ust-sag{display:grid;gap:8px;justify-items:end;min-width:220px}
+.ust .dil-secimi{display:flex;gap:5px;justify-self:end}
+.ust .dil-secimi button{padding:5px 10px;font-size:12px;font-weight:700}
 .durum-rozet{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--cizgi);border-radius:999px;background:var(--kart);font-size:12px;font-weight:650;max-width:100%}
 .durum-rozet::before{content:"";width:8px;height:8px;flex:none;border-radius:50%;background:#10b981;box-shadow:0 0 0 4px #10b98122}
 .durum-rozet.bosta::before{background:#f59e0b;box-shadow:0 0 0 4px #f59e0b22}
@@ -216,48 +255,50 @@ tbody tr:hover{background:var(--vurgu-zemin)}
 </style></head><body>
 <div class="sarmal">
   <header class="ust">
-    <div><div class="eyebrow">Kişisel kullanım raporu</div><h1>Ekran Takip</h1>
+    <div><div class="eyebrow" data-metin="Kişisel kullanım raporu">Kişisel kullanım raporu</div><h1 data-metin="Ekran Takip">Ekran Takip</h1>
       <div class="altbaslik" id="donemBaslik">Kullanımınıza yakından bakın</div></div>
-    <div class="ust-sag"><div class="durum-rozet" id="durum" role="status" aria-live="polite">Veriler yükleniyor…</div>
+    <div class="ust-sag"><div class="dil-secimi" role="group" aria-label="Language / Dil">
+      <button type="button" data-dil="tr">TR</button><button type="button" data-dil="en">EN</button></div>
+      <div class="durum-rozet" id="durum" role="status" aria-live="polite">Veriler yükleniyor…</div>
       <div id="sekmeDurumu">Sekme bağlantısı kontrol ediliyor…</div></div>
   </header>
 
   <div class="araclar">
-    <button data-hazir="bugun">Bugün</button>
-    <button data-hazir="dun">Dün</button>
-    <button data-hazir="hafta">Bu hafta</button>
-    <button data-hazir="son_yedi_gun">Son 7 gün</button>
-    <button data-hazir="ay">Bu ay</button>
-    <button data-hazir="uc_ay">Son 3 ay</button>
-    <button data-hazir="tumu">Tümü</button>
+    <button data-hazir="bugun" data-metin="Bugün">Bugün</button>
+    <button data-hazir="dun" data-metin="Dün">Dün</button>
+    <button data-hazir="hafta" data-metin="Bu hafta">Bu hafta</button>
+    <button data-hazir="son_yedi_gun" data-metin="Son 7 gün">Son 7 gün</button>
+    <button data-hazir="ay" data-metin="Bu ay">Bu ay</button>
+    <button data-hazir="uc_ay" data-metin="Son 3 ay">Son 3 ay</button>
+    <button data-hazir="tumu" data-metin="Tümü">Tümü</button>
     <div class="ayirac"></div>
     <div class="ozelAralik">
-      <input type="date" id="bas"> <span>-</span> <input type="date" id="bit">
-      <button id="uygula">Göster</button>
+      <input type="date" id="bas" data-aria-metin="Başlangıç tarihi" aria-label="Başlangıç tarihi"> <span>-</span> <input type="date" id="bit" data-aria-metin="Bitiş tarihi" aria-label="Bitiş tarihi">
+      <button id="uygula" data-metin="Göster">Göster</button>
     </div>
-    <button id="excelIndir">Excel indir</button>
-    <button id="cikis">Çıkış yap</button>
+    <button id="excelIndir" data-metin="Excel indir">Excel indir</button>
+    <button id="cikis" data-metin="Çıkış yap">Çıkış yap</button>
     <span id="indirmeDurumu" role="status" aria-live="polite"></span>
   </div>
 
   <div class="kartlar" id="kartlar"></div>
 
   <div class="grafik" id="grafikKutu" hidden>
-    <div class="baslik" id="grafikBaslik">Günlük kullanım</div>
+    <div class="baslik" id="grafikBaslik" data-metin="Günlük kullanım">Günlük kullanım</div>
     <div class="sutunlar" id="sutunlar"></div>
   </div>
 
   <div class="sekmeler">
-    <button class="sekme secili" data-sekme="uygulamalar">Uygulamalar</button>
-    <button class="sekme" data-sekme="sayfalar">Sayfalar</button>
-    <button class="sekme" data-sekme="siteler">Siteler</button>
-    <button class="sekme" data-sekme="zaman">Zaman çizelgesi</button>
+    <button class="sekme secili" data-sekme="uygulamalar" data-metin="Uygulamalar">Uygulamalar</button>
+    <button class="sekme" data-sekme="sayfalar" data-metin="Sayfalar">Sayfalar</button>
+    <button class="sekme" data-sekme="siteler" data-metin="Siteler">Siteler</button>
+    <button class="sekme" data-sekme="zaman" data-metin="Zaman çizelgesi">Zaman çizelgesi</button>
   </div>
 
   <div class="aciklama" id="renkAciklama">
-    <span><i class="nokta g"></i> Ekranda görünür</span>
-    <span><i class="nokta k"></i> Ekranda ama üstü kapalı</span>
-    <span><i class="nokta s"></i> Simge durumunda</span>
+    <span><i class="nokta g"></i> <b data-metin="Ekranda görünür">Ekranda görünür</b></span>
+    <span><i class="nokta k"></i> <b data-metin="Ekranda ama üstü kapalı">Ekranda ama üstü kapalı</b></span>
+    <span><i class="nokta s"></i> <b data-metin="Simge durumunda">Simge durumunda</b></span>
   </div>
 
   <div id="icerik"></div>
@@ -265,9 +306,75 @@ tbody tr:hover{background:var(--vurgu-zemin)}
 </div>
 
 <script>
+const ingilizce={
+  'Ekran Takip':'ScreenLedger','Kişisel kullanım raporu':'Personal activity report',
+  'Kullanımınıza yakından bakın':'A closer look at your activity',
+  'Veriler yükleniyor…':'Loading activity…',
+  'Sekme bağlantısı kontrol ediliyor…':'Checking tab connection…',
+  'Bugün':'Today','Dün':'Yesterday','Bu hafta':'This week',
+  'Son 7 gün':'Last 7 days','Bu ay':'This month','Son 3 ay':'Last 3 months',
+  'Tümü':'All time','Göster':'Show','Excel indir':'Download Excel',
+  'Başlangıç tarihi':'Start date','Bitiş tarihi':'End date',
+  'Çıkış yap':'Sign out','Günlük kullanım':'Daily activity',
+  'Uygulamalar':'Apps','Sayfalar':'Pages','Siteler':'Sites',
+  'Zaman çizelgesi':'Timeline','Ekranda görünür':'Visible on screen',
+  'Ekranda ama üstü kapalı':'Open but covered','Simge durumunda':'Minimized',
+  'Oturum sona erdi':'Your session has expired',
+  'Bilgisayar kilitli':'Computer locked','Şu an boşta':'Currently idle',
+  'pencere ekranda':'windows on screen','Son ölçüm:':'Last sample:',
+  'Adres okuma':'Address reading','açık':'on','kapalı':'off',
+  'kullanım özeti':'activity summary','Bilgisayar açık kaldı':'Computer on time',
+  'gün kayıt':'days recorded','Aktif kullanım':'Active use',
+  'Günde ort.':'Daily avg.','Boşta geçen':'Idle time',
+  'Farklı uygulama':'Distinct apps','Kayıt boyutu':'Database size',
+  'satır':'rows','Günlük aktif kullanım':'Daily active use',
+  'gün':'days','Bu tarih aralığında ayrıntılı zaman kaydı yok.':'No detailed timeline records for this date range.',
+  'Son 1000 durum aralığı gösterilir. Tam kayıt Excel indirmesinde bulunur. Boş bitiş: son gözlemde sürüyordu.':'The latest 1,000 state intervals are shown. The full record is in the Excel export. An empty end time means it was still ongoing at the last observation.',
+  'Başlangıç':'Start','Bitiş':'End','Tür / uygulama':'Type / app',
+  'Sekme / pencere':'Tab / window','Durum':'State','Bitiş açıklaması':'End reason',
+  'Devam ediyor':'Ongoing','Adres seçilmeden okunamadı':'Address unavailable until selected',
+  'Bu aralıkta kayıt yok.':'No records in this period.',
+  'Uygulama':'App','Üstü kapalı':'Covered','Simge':'Minimized','Dağılım':'Breakdown',
+  'Ayrıntı yok.':'No details available.','Sayfa / pencere':'Page / window',
+  'Aktif':'Active','Görünür':'Visible','Gün':'Days',
+  'Bu aralıkta adres kaydı yok.':'No website records in this period.',
+  'Adres kaydı yeni açıldıysa veri birikmesi zaman alır.':'If address tracking was just enabled, data may take time to appear.',
+  'Site':'Site','Ekranda':'On screen','Sayfa':'Pages',
+  'Lütfen başlangıç ve bitiş tarihini seçin.':'Please select a start and end date.',
+  'Dosya hazırlanıyor…':'Preparing file…',
+  'Dosya hazırlanamadı. Lütfen tekrar deneyin.':'Could not prepare the file. Please try again.',
+  'İndirme başlatıldı:':'Download started:',
+  'Windows ile sekme takibi açık':'Windows tab tracking is on',
+  'sekme görüldü':'tabs found',
+  'Saatler Zaman çizelgesinde ve Excel indirmesinde.':'Times are in the Timeline and Excel export.',
+  'Tarayıcı sekme bağlantısı açık':'Browser tab connection is on',
+  'Sekme okuması henüz doğrulanamadı; pencere takibi devam ediyor.':'Tab reading has not been confirmed yet; window tracking continues.',
+  'Pencere':'Window','Sekme':'Tab','Sekme (Windows)':'Tab (Windows)',
+  'Kilitli':'Locked','Kullanıcı boşta':'User idle',
+  'Seçili pencere':'Selected window','Seçili değil':'Not selected',
+  'Arka planda — başka sekme seçili':'In background — another tab selected',
+  'Arka planda — pencere küçültülmüş':'In background — window minimized',
+  'Arka planda — sekme bellekte bekletilmiyor':'In background — tab discarded from memory',
+  'Arka planda — üstü kapalı veya ekran dışında':'In background — covered or off-screen',
+  'Seçili sekme — pencere görünürlüğü doğrulanamadı':'Selected tab — window visibility unconfirmed',
+  'Takip kesildi; kesin kapanış bilinmiyor':'Tracking interrupted; exact end unknown',
+  'Durum veya sayfa değişti':'State or page changed',
+  'Ölçüm kesildi; uyku veya kapanış kesin değil':'Sampling interrupted; sleep or shutdown uncertain',
+  'Pencere kapandı':'Window closed',
+  'Pencere izleme dışında; kapanış doğrulanmadı':'Window no longer observed; closure unconfirmed',
+  'Tarayıcı bağlantısı kesildi; kapanış bilinmiyor':'Browser connection lost; closure unknown',
+  'Bağlantı kesintisi; ara hareketler bilinmiyor':'Connection interrupted; intervening activity unknown',
+  'Sekme kapandı':'Tab closed',
+  'Sekme listeden çıktı; kapanış doğrulanmadı':'Tab disappeared from list; closure unconfirmed',
+  'Tarayıcı penceresi kapandı':'Browser window closed',
+  'Sekme listeden çıktı; kapandı veya taşındı':'Tab disappeared from list; closed or moved',
+  'Sekme okuması kesildi; kapanış bilinmiyor':'Tab reading interrupted; closure unknown'
+};
+let dil='tr';try{dil=localStorage.getItem('screenledger-language')==='en'?'en':'tr';}catch(e){}
+function m(metin){return dil==='en'?(ingilizce[metin]||metin):metin;}
 const asilFetch=window.fetch;
 window.fetch=async (...args)=>{const sonuc=await asilFetch(...args);
-  if(sonuc.status===401){location.replace('/');throw new Error('Oturum sona erdi');}
+  if(sonuc.status===401){location.replace('/');throw new Error(m('Oturum sona erdi'));}
   return sonuc;};
 document.getElementById('cikis').addEventListener('click',async()=>{
   await fetch('/auth/cik',{method:'POST',headers:{'X-Ekran-Form':'1'}});location.replace('/');
@@ -276,9 +383,9 @@ document.getElementById('cikis').addEventListener('click',async()=>{
 function sure(s){
   s=Math.round(s||0);
   var h=Math.floor(s/3600), d=Math.floor((s%3600)/60);
-  if(h) return h+"s "+String(d).padStart(2,"0")+"dk";
-  if(d) return d+"dk";
-  return s+"sn";
+  if(h) return h+(dil==='en'?'h ':'s ')+String(d).padStart(2,"0")+(dil==='en'?'m':'dk');
+  if(d) return d+(dil==='en'?'m':'dk');
+  return s+(dil==='en'?'s':'sn');
 }
 function kacis(s){
   return String(s==null?"":s).replace(/[&<>"]/g,function(c){
@@ -292,6 +399,33 @@ function gunEkle(t,n){ var y=new Date(t); y.setDate(y.getDate()+n); return y; }
 
 // ---------- durum ----------
 var D = { bas:"", bit:"", sekme:"uygulamalar", ilkGun:null, acikOlanlar:{}, istekSira:0, sekmeSira:0 };
+function diliAyarla(yeni){
+  dil=yeni==='en'?'en':'tr';
+  try{localStorage.setItem('screenledger-language',dil);}catch(e){}
+  document.documentElement.lang=dil;
+  document.title=m('Ekran Takip');
+  document.querySelectorAll('[data-metin]').forEach(function(oge){
+    oge.textContent=m(oge.dataset.metin);
+  });
+  document.querySelectorAll('[data-aria-metin]').forEach(function(oge){
+    oge.setAttribute('aria-label',m(oge.dataset.ariaMetin));
+  });
+  document.querySelectorAll('[data-dil]').forEach(function(dugme){
+    var secili=dugme.dataset.dil===dil;
+    dugme.classList.toggle('secili',secili);
+    dugme.setAttribute('aria-pressed',String(secili));
+  });
+  document.getElementById('indirmeDurumu').textContent='';
+  if(D.bas && D.bit){yukle(false);sekmeDurumunuGoster();}
+  else{
+    document.getElementById('donemBaslik').textContent=m('Kullanımınıza yakından bakın');
+    document.getElementById('durum').textContent=m('Veriler yükleniyor…');
+    document.getElementById('sekmeDurumu').textContent=m('Sekme bağlantısı kontrol ediliyor…');
+  }
+}
+document.querySelectorAll('[data-dil]').forEach(function(dugme){
+  dugme.onclick=function(){diliAyarla(dugme.dataset.dil);};
+});
 const azHareket=window.matchMedia('(prefers-reduced-motion: reduce)');
 function gorunumGecisi(guncelle, hareketli){
   if(hareketli && !azHareket.matches && document.startViewTransition){
@@ -338,27 +472,28 @@ async function yukle(hareketli=false){
   var d=v.durum;
   var durum=document.getElementById('durum');
   durum.className='durum-rozet'+(d.kilitli?' kilitli':d.bosta?' bosta':'');
-  durum.textContent=d.kilitli?'Bilgisayar kilitli':d.bosta?'Şu an boşta':d.pencere_sayisi+' pencere ekranda';
-  durum.title='Son ölçüm: '+d.son_olcum+' · Adres okuma '+(d.url_okuma?'açık':'kapalı');
-  document.getElementById('donemBaslik').textContent=D.bas===D.bit?D.bas+' kullanım özeti':D.bas+' – '+D.bit+' kullanım özeti';
+  durum.textContent=d.kilitli?m('Bilgisayar kilitli'):d.bosta?m('Şu an boşta'):
+    d.pencere_sayisi+' '+(dil==='en'&&d.pencere_sayisi===1?'window on screen':m('pencere ekranda'));
+  durum.title=m('Son ölçüm:')+' '+d.son_olcum+' · '+m('Adres okuma')+' '+m(d.url_okuma?'açık':'kapalı');
+  document.getElementById('donemBaslik').textContent=(D.bas===D.bit?D.bas:D.bas+' – '+D.bit)+' '+m('kullanım özeti');
 
   var gunSayisi = Math.max(v.ozet.gun_sayisi||0, 1);
   document.getElementById("kartlar").innerHTML =
-      kart("Bilgisayar açık kaldı", sure(v.ozet.acik_saniye),
-           v.ozet.gun_sayisi+" gün kayıt",hareketli)
-    + kart("Aktif kullanım", sure(v.ozet.etkin_saniye),
-           "Günde ort. "+sure(v.ozet.etkin_saniye/gunSayisi),hareketli,true)
-    + kart("Boşta geçen", sure(v.ozet.bosta_saniye), "",hareketli)
-    + kart("Farklı uygulama", v.uygulamalar.length, "",hareketli)
-    + kart("Kayıt boyutu", v.sistem.db_mb.toFixed(1)+" MB",
-           v.sistem.satir.toLocaleString("tr")+" satır",hareketli);
+      kart(m("Bilgisayar açık kaldı"), sure(v.ozet.acik_saniye),
+           v.ozet.gun_sayisi+" "+(dil==='en'&&v.ozet.gun_sayisi===1?'day recorded':m("gün kayıt")),hareketli)
+    + kart(m("Aktif kullanım"), sure(v.ozet.etkin_saniye),
+           m("Günde ort.")+" "+sure(v.ozet.etkin_saniye/gunSayisi),hareketli,true)
+    + kart(m("Boşta geçen"), sure(v.ozet.bosta_saniye), "",hareketli)
+    + kart(m("Farklı uygulama"), v.uygulamalar.length, "",hareketli)
+    + kart(m("Kayıt boyutu"), v.sistem.db_mb.toFixed(1)+" MB",
+           v.sistem.satir.toLocaleString(dil==='en'?'en-US':'tr-TR')+" "+m("satır"),hareketli);
 
   grafikCiz(v.gunluk,hareketli);
   D.sonUygulamalar = v.uygulamalar;
   await sekmeCiz(hareketli);
-  document.getElementById("dipnot").textContent =
-    D.bas+" - "+D.bit+" arasi  |  ayni anda birden fazla pencere ekranda "
-    +"oldugunda toplam sure gercek zamandan uzun cikar, bu normaldir.";
+  document.getElementById("dipnot").textContent = D.bas+" – "+D.bit+"  |  "+
+    (dil==='en'?'Visible times can exceed elapsed time when several windows appear on screen at once.':
+    'Aynı anda birden fazla pencere görünüyorsa toplam süre geçen gerçek zamandan uzun olabilir.');
 }
 
 function kart(etiket,deger,ek,hareketli,vurgulu=false){
@@ -374,7 +509,7 @@ function grafikCiz(gunluk,hareketli){
   var enBuyuk=1;
   gunluk.forEach(function(g){ enBuyuk=Math.max(enBuyuk,g.etkin_saniye); });
   document.getElementById("grafikBaslik").textContent =
-    "Günlük aktif kullanım ("+gunluk.length+" gün)";
+    m("Günlük aktif kullanım")+" ("+gunluk.length+" "+(dil==='en'&&gunluk.length===1?'day':m("gün"))+")";
   document.getElementById("sutunlar").innerHTML = gunluk.map(function(g,i){
     var y=Math.max(g.etkin_saniye/enBuyuk*100, 2);
     return '<div class="sutun'+(hareketli&&!azHareket.matches?' hareketli-sutun':'')+'" style="height:'+y+'%;animation-delay:'+Math.min(i*18,360)+'ms">'
@@ -405,13 +540,13 @@ async function sekmeCiz(hareketli=false){
     var rows=(await rz.json()).araliklar||[];
     if(istek!==D.sekmeSira) return;
     gorunumGecisi(function(){
-      if(!rows.length){icerik.innerHTML='<div class="bos">Bu tarih aralığında ayrıntılı zaman kaydı yok.</div>';return;}
-      icerik.innerHTML='<div class="kucuk" style="margin:8px 0">Son 1000 durum aralığı gösterilir. Tam kayıt Excel indirmesinde bulunur. Boş bitiş: son gözlemde sürüyordu.</div>'
-      +'<div class="tablo-kapsayici"><table><thead><tr><th>Başlangıç</th><th>Bitiş</th><th>Tür / uygulama</th><th>Sekme / pencere</th><th>Durum</th><th>Bitiş açıklaması</th></tr></thead><tbody>'
+      if(!rows.length){icerik.innerHTML='<div class="bos">'+m('Bu tarih aralığında ayrıntılı zaman kaydı yok.')+'</div>';return;}
+      icerik.innerHTML='<div class="kucuk" style="margin:8px 0">'+m('Son 1000 durum aralığı gösterilir. Tam kayıt Excel indirmesinde bulunur. Boş bitiş: son gözlemde sürüyordu.')+'</div>'
+      +'<div class="tablo-kapsayici"><table><thead><tr><th>'+m('Başlangıç')+'</th><th>'+m('Bitiş')+'</th><th>'+m('Tür / uygulama')+'</th><th>'+m('Sekme / pencere')+'</th><th>'+m('Durum')+'</th><th>'+m('Bitiş açıklaması')+'</th></tr></thead><tbody>'
       +rows.map(function(x){return '<tr><td>'+kacis(x.baslangic)+'</td><td>'
-       +kacis(x.bitis||'Devam ediyor')+'</td><td>'+kacis(x.kaynak)+'<div class="kucuk">'+kacis(x.uygulama)+'</div></td>'
-       +'<td>'+kacis(x.baslik)+'<div class="kucuk">'+kacis(x.adres||'Adres seçilmeden okunamadı')+'</div></td><td>'
-       +kacis(x.durum)+'<div class="kucuk">'+kacis(x.kullanim)+'</div></td><td>'+kacis(x.bitis_nedeni||'—')+'</td></tr>';}).join('')
+       +kacis(x.bitis||m('Devam ediyor'))+'</td><td>'+kacis(m(x.kaynak))+'<div class="kucuk">'+kacis(x.uygulama)+'</div></td>'
+       +'<td>'+kacis(x.baslik)+'<div class="kucuk">'+kacis(x.adres||m('Adres seçilmeden okunamadı'))+'</div></td><td>'
+       +kacis(m(x.durum))+'<div class="kucuk">'+kacis(m(x.kullanim))+'</div></td><td>'+kacis(m(x.bitis_nedeni||'—'))+'</td></tr>';}).join('')
       +'</tbody></table></div>';
       tabloHazirla(icerik);
     },hareketli);
@@ -436,22 +571,22 @@ function tabloHazirla(kok){
 
 function uygulamalariCiz(icerik, liste){
   if(!liste || !liste.length){
-    icerik.innerHTML='<div class="bos">Bu aralıkta kayıt yok.</div>'; return; }
+    icerik.innerHTML='<div class="bos">'+m('Bu aralıkta kayıt yok.')+'</div>'; return; }
   var enBuyuk=1;
   liste.forEach(function(u){
     enBuyuk=Math.max(enBuyuk,u.gorunur+u.ustu_kapali+u.simge); });
 
   icerik.innerHTML =
-    '<table><thead><tr><th class="sira">#</th><th>Uygulama</th>'
-    +'<th class="sag">Aktif kullanım</th><th class="sag">Ekranda görünür</th>'
-    +'<th class="sag">Üstü kapalı</th><th class="sag">Simge</th>'
-    +'<th style="width:120px">Dağılım</th></tr></thead><tbody id="govde">'
+    '<table><thead><tr><th class="sira">#</th><th>'+m('Uygulama')+'</th>'
+    +'<th class="sag">'+m('Aktif kullanım')+'</th><th class="sag">'+m('Ekranda görünür')+'</th>'
+    +'<th class="sag">'+m('Üstü kapalı')+'</th><th class="sag">'+m('Simge')+'</th>'
+    +'<th style="width:120px">'+m('Dağılım')+'</th></tr></thead><tbody id="govde">'
     + liste.map(function(u,i){
         var t=u.gorunur+u.ustu_kapali+u.simge;
         return '<tr class="acilir" tabindex="0" role="button" aria-expanded="false" data-exe="'+kacis(u.exe)+'">'
           +'<td class="sira">'+(i+1)+'</td>'
           +'<td><div class="ad">'+kacis(u.ad)+'</div>'
-            +'<div class="kucuk">'+kacis(u.exe)+' &middot; '+u.gun_sayisi+' gün</div></td>'
+            +'<div class="kucuk">'+kacis(u.exe)+' &middot; '+u.gun_sayisi+' '+m('gün')+'</div></td>'
           +'<td class="sag">'+sure(u.aktif)+'</td>'
           +'<td class="sag">'+sure(u.gorunur)+'</td>'
           +'<td class="sag">'+sure(u.ustu_kapali)+'</td>'
@@ -499,17 +634,17 @@ async function detayGetir(satir, exe){
       +'<td class="sag">'+sure(b.simge)+'</td><td></td></tr>';
   }).join("");
   satir.insertAdjacentHTML("afterend", html ||
-    '<tr class="alt"><td></td><td colspan="6">Ayrıntı yok.</td></tr>');
+    '<tr class="alt"><td></td><td colspan="6">'+m('Ayrıntı yok.')+'</td></tr>');
   tabloEtiketle(satir.closest('table'));
 }
 
 function sayfalariCiz(icerik, liste){
   if(!liste || !liste.length){
-    icerik.innerHTML='<div class="bos">Bu aralıkta kayıt yok.</div>'; return; }
+    icerik.innerHTML='<div class="bos">'+m('Bu aralıkta kayıt yok.')+'</div>'; return; }
   icerik.innerHTML =
-    '<table><thead><tr><th class="sira">#</th><th>Sayfa / pencere</th>'
-    +'<th>Uygulama</th><th class="sag">Aktif</th><th class="sag">Görünür</th>'
-    +'<th class="sag">Gün</th></tr></thead><tbody>'
+    '<table><thead><tr><th class="sira">#</th><th>'+m('Sayfa / pencere')+'</th>'
+    +'<th>'+m('Uygulama')+'</th><th class="sag">'+m('Aktif')+'</th><th class="sag">'+m('Görünür')+'</th>'
+    +'<th class="sag">'+m('Gün')+'</th></tr></thead><tbody>'
     + liste.map(function(b,i){
         return '<tr><td class="sira">'+(i+1)+'</td>'
           +'<td><div class="ad">'+kacis(b.baslik)+'</div>'
@@ -524,15 +659,15 @@ function sayfalariCiz(icerik, liste){
 
 function sitelerCiz(icerik, liste){
   if(!liste || !liste.length){
-    icerik.innerHTML='<div class="bos">Bu aralıkta adres kaydı yok.<br>'
-      +'<span class="kucuk">Adres kaydı yeni açıldıysa veri birikmesi zaman alır.</span></div>';
+    icerik.innerHTML='<div class="bos">'+m('Bu aralıkta adres kaydı yok.')+'<br>'
+      +'<span class="kucuk">'+m('Adres kaydı yeni açıldıysa veri birikmesi zaman alır.')+'</span></div>';
     return; }
   var enBuyuk=1;
   liste.forEach(function(a){ enBuyuk=Math.max(enBuyuk,a.aktif); });
   icerik.innerHTML =
-    '<table><thead><tr><th class="sira">#</th><th>Site</th>'
-    +'<th class="sag">Aktif kullanım</th><th class="sag">Ekranda</th>'
-    +'<th class="sag">Sayfa</th><th class="sag">Gün</th>'
+    '<table><thead><tr><th class="sira">#</th><th>'+m('Site')+'</th>'
+    +'<th class="sag">'+m('Aktif kullanım')+'</th><th class="sag">'+m('Ekranda')+'</th>'
+    +'<th class="sag">'+m('Sayfa')+'</th><th class="sag">'+m('Gün')+'</th>'
     +'<th style="width:130px"></th></tr></thead><tbody>'
     + liste.map(function(a,i){
         return '<tr><td class="sira">'+(i+1)+'</td>'
@@ -551,18 +686,18 @@ function sitelerCiz(icerik, liste){
 document.getElementById('excelIndir').onclick=async function(){
   var dugme=this, durum=document.getElementById('indirmeDurumu');
   var bas=document.getElementById('bas').value, bit=document.getElementById('bit').value;
-  if(!bas||!bit){ durum.textContent='Lütfen başlangıç ve bitiş tarihini seçin.'; return; }
+  if(!bas||!bit){ durum.textContent=m('Lütfen başlangıç ve bitiş tarihini seçin.'); return; }
   if(bas>bit){ var t=bas; bas=bit; bit=t; }
-  dugme.disabled=true; durum.textContent='Dosya hazırlanıyor…';
+  dugme.disabled=true; durum.textContent=m('Dosya hazırlanıyor…');
   try{
     var r=await fetch('/api/excel?bas='+encodeURIComponent(bas)+'&bit='+encodeURIComponent(bit));
     if(!r.ok || !(r.headers.get('Content-Type')||'').includes('spreadsheetml'))
-      throw new Error('Dosya hazırlanamadı. Lütfen tekrar deneyin.');
+      throw new Error(m('Dosya hazırlanamadı. Lütfen tekrar deneyin.'));
     var blob=await r.blob(), url=URL.createObjectURL(blob), a=document.createElement('a');
     a.href=url; a.download='Ekran-Takip-Hizali_'+bas+'_'+bit+'.xlsx';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){URL.revokeObjectURL(url);},60000);
-    durum.textContent='İndirme başlatıldı: '+bas+' – '+bit;
+    durum.textContent=m('İndirme başlatıldı:')+' '+bas+' – '+bit;
   }catch(hata){ durum.textContent=hata.message; }
   finally{ dugme.disabled=false; }
 };
@@ -606,11 +741,12 @@ async function sekmeDurumunuGoster(){
   try{
     var r=await fetch('/api/sekme-durum'), s=await r.json();
     document.getElementById('sekmeDurumu').textContent=s.windows_connected
-      ? 'Windows ile sekme takibi açık · '+s.windows_tabs+' sekme görüldü · Saatler Zaman çizelgesinde ve Excel indirmesinde.'
-      : s.connected ? 'Tarayıcı sekme bağlantısı açık · '+s.tabs+' sekme görüldü.'
-      : 'Sekme okuması henüz doğrulanamadı; pencere takibi devam ediyor.';
+      ? m('Windows ile sekme takibi açık')+' · '+s.windows_tabs+' '+m('sekme görüldü')+' · '+m('Saatler Zaman çizelgesinde ve Excel indirmesinde.')
+      : s.connected ? m('Tarayıcı sekme bağlantısı açık')+' · '+s.tabs+' '+m('sekme görüldü')+'.'
+      : m('Sekme okuması henüz doğrulanamadı; pencere takibi devam ediyor.');
   }catch(e){}
 }
+diliAyarla(dil);
 sekmeDurumunuGoster(); setInterval(sekmeDurumunuGoster,15000);
 (async function(){
   var r=await fetch("/api/gunler"); var g=await r.json();
