@@ -25,6 +25,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from http.cookies import SimpleCookie
 
 from kimlik import Kimlik
+from yollar import KIMLIK_DOSYASI
 
 _takipci = None
 _kimlik = None
@@ -828,7 +829,8 @@ class _Islemci(BaseHTTPRequestHandler):
 def baslat(takipci, port):
     global _takipci, _kimlik
     _takipci = takipci
-    _kimlik = Kimlik(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'kimlik.json'))
+    os.makedirs(os.path.dirname(KIMLIK_DOSYASI), exist_ok=True)
+    _kimlik = Kimlik(KIMLIK_DOSYASI)
     sunucu = ThreadingHTTPServer(("127.0.0.1", port), _Islemci)
     sunucu.daemon_threads = True
     sunucu.serve_forever()

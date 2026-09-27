@@ -13,6 +13,10 @@ kimlik.json
 sekme-eklentisi/ayar.json
 baslat.vbs
 durdur.isaret
+data/
+logs/
+backups/
+tests/
 
 # Yerel kurulum ve Python geçici dosyaları
 .venv/

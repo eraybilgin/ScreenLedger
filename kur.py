@@ -21,6 +21,7 @@ BASLANGIC = os.path.join(os.environ["APPDATA"],
                          r"Microsoft\Windows\Start Menu\Programs\Startup")
 BASLANGIC_DOSYASI = os.path.join(BASLANGIC, "EkranTakip.vbs")
 BASLAT_VBS = os.path.join(BURASI, "baslat.vbs")
+GUNLUK_KLASORU = os.path.join(BURASI, "logs")
 ORTAM = os.path.join(BURASI, ".venv")
 ORTAM_PYTHON = os.path.join(ORTAM, "Scripts", "python.exe")
 ORTAM_PYTHONW = os.path.join(ORTAM, "Scripts", "pythonw.exe")
@@ -50,6 +51,7 @@ def bagimliliklari_kur():
 
 
 def vbs_yaz():
+    os.makedirs(GUNLUK_KLASORU, exist_ok=True)
     icerik = (
         "' Ekran Takip - bu bilgisayarda kurulum sırasında oluşturulur\r\n"
         'Set kabuk = CreateObject("WScript.Shell")\r\n'
@@ -71,7 +73,7 @@ def vbs_yaz():
         '  kayit.WriteLine Now & "  PROCESS_EXIT code=" & cikisKodu\r\n'
         'End If\r\n'
         'kayit.Close\r\n'
-        % (BURASI, os.path.join(BURASI, "baslatma.log"), pythonw_yolu(),
+        % (BURASI, os.path.join(GUNLUK_KLASORU, "baslatma.log"), pythonw_yolu(),
            os.path.join(BURASI, "takip.py"))
     )
     with open(BASLAT_VBS, "w", encoding="utf-16") as dosya:
@@ -146,7 +148,7 @@ def kaldir():
             print("  Çalışan program kayıtlarını yazıp kapandı.")
     else:
         print("  Çalışan program yoktu.")
-    print("\nNOT: Toplanan veriler 'veri.db' dosyasinda duruyor, silinmedi.")
+    print("\nNOT: Toplanan veriler silinmedi; 'data/veri.db' veya eski kurulumdaki 'veri.db' dosyasinda duruyor.")
 
 
 if __name__ == "__main__":

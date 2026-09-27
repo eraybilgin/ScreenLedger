@@ -41,7 +41,7 @@ Bu proje **kişisel kullanım** içindir. Kayıtları çevrimiçi bir hesaba gö
 
 Sonraki günlerde raporu açmak için `raporu-ac.bat` dosyasını kullanabilirsiniz. Bu dosya yalnızca rapor sayfasını açar; takibi başlatmaz veya kurmaz. Bilgisayar yeniden açıldığında takip, **Windows hesabınızla oturum açmanızın ardından** otomatik başlar. Rapor sekmesinin açık kalması gerekmez.
 
-Sayfa açılmıyorsa kurulum klasöründeki `baslatma.log`, `calisma.log` ve `hatalar.log` dosyalarını kontrol edin. Hata paylaşırken dosya yollarınızı ve ziyaret ettiğiniz adresleri gizleyin.
+Sayfa açılmıyorsa kurulum klasörünün `logs` alt klasöründeki `baslatma.log`, `calisma.log` ve `hatalar.log` dosyalarını kontrol edin. Hata paylaşırken dosya yollarınızı ve ziyaret ettiğiniz adresleri gizleyin.
 
 ### Süreler nasıl okunur?
 
@@ -66,19 +66,19 @@ Eklenti olmadan kullanılan Windows okuması, tarayıcı görünür hâle getiri
 ### Gizlilik ve verileriniz
 
 - Rapor sayfası yalnızca **bu bilgisayarda** `127.0.0.1:8777` adresinde dinler. Uygulama kayıtlarınızı bulut hesabına göndermez.
-- Kullanım kayıtları kurulum klasöründeki `veri.db` dosyasındadır. Çalışma sırasında `veri.db-wal` ve `veri.db-shm` yardımcı dosyaları oluşabilir. Program açıkken bu dosyaları silmeyin.
-- `kimlik.json` şifrenizin açık metnini değil, doğrulamada kullanılan tuzlu özetini saklar. Rapor şifresi **veritabanını şifrelemez**: bilgisayarınızdaki kayıt dosyasına erişimi olan başka bir kullanıcı veya program içeriğini ayrıca okuyabilir.
+- Kullanım kayıtları kurulum klasörünün `data` alt klasöründeki `veri.db` dosyasındadır. Çalışma sırasında `veri.db-wal` ve `veri.db-shm` yardımcı dosyaları oluşabilir. Program açıkken bu dosyaları silmeyin. Eski kurulumlarda kökteki kayıt dosyası da okunur.
+- `data/kimlik.json` şifrenizin açık metnini değil, doğrulamada kullanılan tuzlu özetini saklar. Rapor şifresi **veritabanını şifrelemez**: bilgisayarınızdaki kayıt dosyasına erişimi olan başka bir kullanıcı veya program içeriğini ayrıca okuyabilir.
 - İsteğe bağlı eklentinin yerel bağlantı anahtarı `sekme-eklentisi/ayar.json` dosyasındadır. Bu dosyayı veya günlükleri paylaşmayın.
 - Ziyaret edilen sayfaların başlıkları ve adresleri özel toplantı ya da hesap bağlantıları içerebilir. İndirdiğiniz Excel dosyalarını paylaşmadan önce gözden geçirin.
 - Ekrandaki hareketi anlamak için görüntünün çok küçük bir örneği karşılaştırılır; ekran görüntüsü dosyaya kaydedilmez.
 
-Şifreyi unutursanız e-posta ile kurtarma yoktur. `kimlik.json` dosyasını silmek yeni şifre oluşturma ekranını açar ve `veri.db` içindeki kullanım kayıtlarını silmez. Bu nedenle bilgisayardaki dosya erişim izinleri önemlidir.
+Şifreyi unutursanız e-posta ile kurtarma yoktur. `data/kimlik.json` dosyasını silmek yeni şifre oluşturma ekranını açar ve `data/veri.db` içindeki kullanım kayıtlarını silmez. Eski kurulumunuz hâlâ kökteki dosyaları kullanıyorsa o konumları esas alın. Bu nedenle bilgisayardaki dosya erişim izinleri önemlidir.
 
 ### Yedekleme, güncelleme ve kaldırma
 
-**Yedekleme:** `kaldir.bat` dosyasını çalıştırıp uygulamanın güvenle kapandığını doğrulayın. Sonra `veri.db`, `kimlik.json` ve eklenti kullanıyorsanız `sekme-eklentisi/ayar.json` dosyalarını güvenli bir yere kopyalayın. Uygulama açıkken yalnızca ana veritabanı dosyasını kopyalamak son kayıtları kaçırabilir. Takibi yeniden başlatmak için `kur.bat` dosyasını çalıştırın.
+**Yedekleme:** `kaldir.bat` dosyasını çalıştırıp uygulamanın güvenle kapandığını doğrulayın. Sonra `data/veri.db`, `data/kimlik.json` ve eklenti kullanıyorsanız `sekme-eklentisi/ayar.json` dosyalarını güvenli bir yere kopyalayın. Eski kurulumunuz hâlâ kökteki kayıt dosyalarını kullanıyorsa onları kopyalayın. Uygulama açıkken yalnızca ana veritabanı dosyasını kopyalamak son kayıtları kaçırabilir. Takibi yeniden başlatmak için `kur.bat` dosyasını çalıştırın.
 
-**Güncelleme:** Önce yedek alın. Yeni kod dosyalarını mevcut klasöre aktarırken `veri.db`, `kimlik.json` ve `sekme-eklentisi/ayar.json` dosyalarının üzerine yazmayın. Sonra `kur.bat` dosyasını çalıştırın. Yeni bir klasöre geçiyorsanız kayıt dosyalarını eski kurulum kapalıyken taşıyın; iki kopyayı aynı anda çalıştırmayın.
+**Güncelleme:** Önce `kaldir.bat` ile uygulamayı güvenle durdurup yedek alın. Yeni kod dosyalarını mevcut klasöre aktarırken `data` klasörünün ve `sekme-eklentisi/ayar.json` dosyasının üzerine yazmayın. Eski kurulumdan kalan kök `veri.db` ve `kimlik.json` dosyalarını da koruyun. Sonra `kur.bat` dosyasını çalıştırarak yeni sürümü başlatın. Yeni bir klasöre geçiyorsanız kayıt dosyalarını eski kurulum kapalıyken taşıyın; iki kopyayı aynı anda çalıştırmayın.
 
 **Kaldırma:** `kaldir.bat` otomatik başlamayı kaldırır ve uygulamayı kapatır; kişisel kayıtlarınızı silmez. Tamamen kaldırmadan önce verilerinizi yedekleyin. Uygulamanın güvenle kapanamadığına dair uyarı varsa klasörü silmeyin.
 
@@ -87,9 +87,9 @@ Eklenti olmadan kullanılan Windows okuması, tarayıcı görünür hâle getiri
 Bu bölüm, kaynak kodunu incelemek veya geliştirmek isteyenler içindir.
 
 - Takip programı yaklaşık **iki saniyede bir** açık pencereleri ölçer. Kısa aralıklı durum değişimlerinin saatleri bu yüzden yaklaşık olabilir. Uyku veya beklenmedik kapanış sırasında kesin bitiş saati bilinemeyebilir.
-- Klavye/fare hareketi yokken ekrandaki hareket de aralıklarla denetlenir. Yaklaşık **on dakika** boyunca etkinlik algılanmazsa bilgisayar boşta sayılır. Ölçüm aralığı ve eşikler `takip.py` dosyasının başındaki ayarlardır.
+- Klavye/fare hareketi yokken ekrandaki hareket de aralıklarla denetlenir. Yaklaşık **on dakika** boyunca etkinlik algılanmazsa bilgisayar boşta sayılır. Ölçüm aralığı ve eşikler `app/takip.py` dosyasının başındaki ayarlardır.
 - Kayıtlar yerel bir SQLite veritabanında tutulur. Rapor için tarayıcıda çalışan yerel bir arayüz, Excel çıktısı için `openpyxl`, Windows erişilebilirlik okuması için `comtypes` kullanılır. Paket listesi `requirements.txt` dosyasındadır.
-- Başlıca dosyalar: `takip.py` (ölçüm döngüsü), `depo.py` (kayıt saklama), `arayuz.py` (yerel rapor), `excel_rapor.py` (Excel çıktısı), `kimlik.py` (rapor girişi), `kur.py` (kurulum/otomatik başlangıç) ve `sekme-eklentisi` (isteğe bağlı tarayıcı desteği).
+- Klasörler: `app` (uygulama kodu), `data` (kişisel kayıtlar), `logs` (çalışma günlükleri), `backups` (yerel yedekler), `sekme-eklentisi` (isteğe bağlı tarayıcı desteği). Üstteki `takip.py` otomatik başlangıcın sabit girişidir; ölçüm döngüsü `app/takip.py` içindedir. `kur.py` kurulum ve otomatik açılışı yönetir.
 - Proje diğer işletim sistemlerinde denenmemiştir.
 
 **Bilinen sınırlar:** Pencere örtüşmesi dikdörtgen alanlar üzerinden yaklaşık hesaplanır; şeffaf veya alışılmadık pencerelerde sapma olabilir. Bazı tam ekran oyunlar pencere başlığını sağlamaz. Her tarayıcı, sekme bilgisini Windows üzerinden aynı ayrıntıda sunmaz.
@@ -128,7 +128,7 @@ This is a **personal-use** tool. It does not send your activity history to an on
 
 Later, `raporu-ac.bat` opens the report page. It does not install or start tracking. After a reboot, tracking starts automatically **once you sign in to your Windows account**. You do not need to leave the report tab open.
 
-If the page does not open, check `baslatma.log`, `calisma.log`, and `hatalar.log` in the installation folder. Redact personal paths and visited URLs before sharing logs in a bug report.
+If the page does not open, check `baslatma.log`, `calisma.log`, and `hatalar.log` in the installation folder's `logs` subfolder. Redact personal paths and visited URLs before sharing logs in a bug report.
 
 ### Understanding the time categories
 
@@ -153,19 +153,19 @@ The extension-free Windows reader may still see incognito window titles if the b
 ### Privacy and your data
 
 - The report server listens only at `127.0.0.1:8777` **on your computer**. Activity records are not uploaded to a cloud account.
-- Records are stored in `veri.db` inside the installation folder. While the app runs, `veri.db-wal` and `veri.db-shm` helper files may also exist. Do not delete these files while the app is running.
-- `kimlik.json` stores a salted password verifier, not your plaintext password. The report password **does not encrypt the database**: another user or program with access to the file can read it separately.
+- Records are stored in `data/veri.db` inside the installation folder. While the app runs, `veri.db-wal` and `veri.db-shm` helper files may also exist. Do not delete these files while the app is running. Existing root-level records from older installations are still supported.
+- `data/kimlik.json` stores a salted password verifier, not your plaintext password. The report password **does not encrypt the database**: another user or program with access to the file can read it separately.
 - The optional extension's local connection key is in `sekme-eklentisi/ayar.json`. Do not share that file or logs.
 - Page titles and URLs can contain private meeting or account links. Review exported Excel files before sharing them.
 - A tiny sample of the screen is compared to detect motion; screenshots are not saved to disk.
 
-There is no email-based password recovery. Deleting `kimlik.json` allows a new password to be set without deleting the activity history in `veri.db`. This is why operating-system file permissions still matter.
+There is no email-based password recovery. Deleting `data/kimlik.json` allows a new password to be set without deleting the activity history in `data/veri.db`. If an older installation still uses root-level files, use those locations instead. This is why operating-system file permissions still matter.
 
 ### Backup, updates, and removal
 
-**Backup:** Run `kaldir.bat` and confirm the app has shut down safely. Copy `veri.db`, `kimlik.json`, and, if you use the extension, `sekme-eklentisi/ayar.json` to a secure location. Copying only the main database while the app is running may miss recent records. Run `kur.bat` to resume tracking.
+**Backup:** Run `kaldir.bat` and confirm the app has shut down safely. Copy `data/veri.db`, `data/kimlik.json`, and, if you use the extension, `sekme-eklentisi/ayar.json` to a secure location. Copy root-level record files instead if your older installation still uses them. Copying only the main database while the app is running may miss recent records. Run `kur.bat` to resume tracking.
 
-**Update:** Back up first. Copy the new source files into the existing folder without overwriting `veri.db`, `kimlik.json`, or `sekme-eklentisi/ayar.json`. Then run `kur.bat`. If you move to a new folder, move those user-data files while the old installation is stopped; do not run both copies simultaneously.
+**Update:** First, stop the app safely with `kaldir.bat` and make a backup. Copy the new source files into the existing folder without overwriting the `data` folder or `sekme-eklentisi/ayar.json`. Keep any root-level `veri.db` and `kimlik.json` from an older installation too. Then run `kur.bat` to start the new version. If you move to a new folder, move those user-data files while the old installation is stopped; do not run both copies simultaneously.
 
 **Remove:** `kaldir.bat` removes automatic startup and stops the app, but does not delete your records. Back up before deleting the installation folder yourself. Do not delete it if shutdown reports an error.
 
@@ -174,9 +174,9 @@ There is no email-based password recovery. Deleting `kimlik.json` allows a new p
 This section is for people who want to inspect or develop the source code.
 
 - The tracker samples open windows about **every two seconds**. State-change times are therefore approximate. Sleep or an unexpected shutdown may leave the exact end time unknown.
-- When keyboard/mouse input stops, screen motion is checked periodically too. The computer is considered idle after roughly **ten minutes** without detected activity. Sampling and idle thresholds are defined near the top of `takip.py`.
+- When keyboard/mouse input stops, screen motion is checked periodically too. The computer is considered idle after roughly **ten minutes** without detected activity. Sampling and idle thresholds are defined near the top of `app/takip.py`.
 - Records live in a local SQLite database. The report is served by a local browser interface; `openpyxl` creates Excel files, and `comtypes` reads Windows accessibility information. Dependencies are listed in `requirements.txt`.
-- Main files: `takip.py` (sampling loop), `depo.py` (storage), `arayuz.py` (local report), `excel_rapor.py` (Excel export), `kimlik.py` (report authentication), `kur.py` (setup and startup), and `sekme-eklentisi` (optional browser integration).
+- Folders: `app` (application code), `data` (private records), `logs` (runtime logs), `backups` (local backups), and `sekme-eklentisi` (optional browser integration). The root `takip.py` is a stable startup entry point; the sampling loop is in `app/takip.py`. `kur.py` manages setup and automatic startup.
 - Other operating systems have not been tested.
 
 **Known limits:** Window occlusion is estimated with rectangles, so transparent or unusual windows can differ from what you perceive. Some fullscreen games do not expose a window title. Browsers vary in how much tab information they expose through Windows.
