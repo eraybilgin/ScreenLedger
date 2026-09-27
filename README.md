@@ -7,6 +7,18 @@ Understand where your computer time goes beyond daily totals: see **which apps a
 
 Bilgisayar başında zamanınızın nereye gittiğini, yalnızca günlük toplamlarla değil, **hangi uygulamanın ve sayfanın ne zaman ekranda olduğunu** görerek anlayın. Veriler kendi bilgisayarınızda kalır; seçtiğiniz tarih aralığını ayrıntılı bir Excel dosyası olarak indirebilirsiniz.
 
+### Preview gallery / Örnek görseller
+
+Illustrative mockups with entirely fictional data; these are **not** captures from a running installation.
+
+Tamamı uydurma verilerle hazırlanmış temsili görsellerdir; çalışan uygulamadan alınmış **gerçek ekran görüntüleri değildir**.
+
+![General fictional activity example](docs/screenshots/ornek-genel.png)
+
+| Architecture / Mimarlık | Software / Yazılım | Design / Tasarım |
+| :---: | :---: | :---: |
+| ![Fictional architect workday](docs/screenshots/ornek-mimar.png) | ![Fictional software developer workday](docs/screenshots/ornek-yazilim.png) | ![Fictional designer workday](docs/screenshots/ornek-tasarim.png) |
+
 [🇬🇧 English](#english) · [🇹🇷 Türkçe](#turkce)
 
 ---
