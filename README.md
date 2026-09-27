@@ -1,100 +1,13 @@
 # ScreenLedger (Ekran Takip)
 
-**Windows için kişisel ekran süresi, uygulama ve tarayıcı sekmesi takibi.**
 **A private screen-time, app-usage, and browser-tab tracker for Windows.**
-
-Bilgisayar başında zamanınızın nereye gittiğini, yalnızca günlük toplamlarla değil, **hangi uygulamanın ve sayfanın ne zaman ekranda olduğunu** görerek anlayın. Veriler kendi bilgisayarınızda kalır; seçtiğiniz tarih aralığını ayrıntılı bir Excel dosyası olarak indirebilirsiniz.
+**Windows için kişisel ekran süresi, uygulama ve tarayıcı sekmesi takibi.**
 
 Understand where your computer time goes beyond daily totals: see **which apps and pages were on screen, and when**. Your records stay on your computer, and you can export a detailed Excel report for any selected date range.
 
-[🇹🇷 Türkçe](#turkce) · [🇬🇧 English](#english)
+Bilgisayar başında zamanınızın nereye gittiğini, yalnızca günlük toplamlarla değil, **hangi uygulamanın ve sayfanın ne zaman ekranda olduğunu** görerek anlayın. Veriler kendi bilgisayarınızda kalır; seçtiğiniz tarih aralığını ayrıntılı bir Excel dosyası olarak indirebilirsiniz.
 
----
-
-<a id="turkce"></a>
-## 🇹🇷 Türkçe
-
-### Ekran Takip ne işe yarar?
-
-“Bugün bilgisayarı kaç saat kullandım?” sorusu çoğu zaman yeterli değildir. Asıl merak edilen, bu sürenin **hangi uygulamalara, sitelere ve sayfalara dağıldığıdır**. Ekran Takip, Windows bilgisayarınızda açık pencereleri ve tarayıcı sekmelerini izleyerek bunu anlaşılır bir rapora dönüştürür.
-
-Örneğin gün sonunda bir uygulamanın ne kadar süre seçili kaldığını, bir toplantı sayfasının hangi saatlerde göründüğünü veya bir sekmenin ne zaman arka plana geçtiğini inceleyebilirsiniz. Zaman çizelgesi, tek bir toplam yerine gün içindeki değişimi gösterir. Tarayıcıdaki rapor sekmesini açık tutmanız gerekmez; takip ayrı bir program olarak çalışır.
-
-Bu proje **kişisel kullanım** içindir. Kayıtları çevrimiçi bir hesaba göndermez ve başka birinin bilgisayarını uzaktan izlemez.
-
-### Neler görebilirsiniz?
-
-- **Uygulamalar:** Hangi program ne kadar kullanılmış, ekranda görünmüş, başka pencerelerin altında kalmış veya simge durumuna küçültülmüş?
-- **Sayfalar ve siteler:** Tarayıcıda hangi sayfa ve site ne kadar süreyle görülmüş? Desteklenen durumlarda sekmeler arası geçiş ve arka planda kalma süreleri de gösterilir.
-- **Zaman çizelgesi:** Uygulama veya sekmenin durumunun gün içinde ne zaman değiştiği. Böylece yalnızca “2 saat” değil, “hangi saat aralıklarında?” sorusuna da bakabilirsiniz.
-- **Esnek tarihler:** Bugün, dün, pazartesiden başlayan bu hafta, son yedi gün, bu ay, son üç ay, tüm kayıtlar veya seçtiğiniz iki tarih.
-- **Ayrıntılı Excel indirmesi:** Seçilen aralık için uygulama toplamları, uygulama içindeki sayfalar, gün ve saat ayrıntıları, sekme saatleri ve zaman çizelgesi ayrı çalışma sayfalarında yer alır.
-
-### Hızlı başlangıç
-
-**Gerekenler:** Windows, Python 3.11 veya üzeri ve ilk kurulumda gerekli paketleri indirmek için internet bağlantısı. Proje Python 3.11 ile geliştirilip denenmiştir. Yönetici izni gerekmez.
-
-1. GitHub üzerinde **Code → Download ZIP** seçeneğiyle kaynak dosyaları indirin ve kalıcı, yazma izniniz olan bir klasöre çıkarın. Kayıtlar da bu klasörde tutulacağı için klasörü kullanırken silmeyin veya taşımayın.
-2. Python kurulu değilse [resmî Windows indirme sayfasından](https://www.python.org/downloads/windows/) kurun.
-3. Çıkardığınız klasörde `kur.bat` dosyasını çift tıklayın. Gerekli paketler uygulamaya ait ayrı bir çalışma ortamına kurulur; takip başlar ve Windows hesabınızla oturum açtığınızda otomatik başlatılacak şekilde ayarlanır.
-4. Tarayıcıda `http://127.0.0.1:8777/` adresini açın. İlk girişte boş olmayan bir rapor şifresi oluşturun ve güvenli bir yerde saklayın.
-
-Sonraki günlerde raporu açmak için `raporu-ac.bat` dosyasını kullanabilirsiniz. Bu dosya yalnızca rapor sayfasını açar; takibi başlatmaz veya kurmaz. Bilgisayar yeniden açıldığında takip, **Windows hesabınızla oturum açmanızın ardından** otomatik başlar. Rapor sekmesinin açık kalması gerekmez.
-
-Sayfa açılmıyorsa kurulum klasörünün `logs` alt klasöründeki `baslatma.log`, `calisma.log` ve `hatalar.log` dosyalarını kontrol edin. Hata paylaşırken dosya yollarınızı ve ziyaret ettiğiniz adresleri gizleyin.
-
-### Süreler nasıl okunur?
-
-| Rapordaki ad | Anlamı |
-| --- | --- |
-| Aktif kullanım | O anda seçili olan pencerenin süresi. Her saniye fare veya klavye hareketi yapmanız gerekmez. |
-| Ekranda görünür | Pencerenin ekranda görüldüğü süre. Birden fazla pencere aynı anda görünüyorsa hepsine süre yazılabilir. |
-| Üstü kapalı | Pencere açıktır, fakat başka pencerelerin altında veya ekranın dışında kalmıştır. |
-| Simge durumunda | Pencere görev çubuğuna küçültülmüştür. |
-| Boşta | Uzun süre klavye, fare veya ekran hareketi algılanmazsa kullanım sayımı durur. Kilitli veya uyuyan bilgisayarda süre sayılmaz. |
-
-**Önemli:** Görünür pencere sürelerinin toplamı, aynı anda birden fazla pencere görülebildiği için geçen gerçek zamandan büyük olabilir. Hareketli video genellikle bilgisayarın boşta sayılmasını önler; bu, videonun başında aktif olarak çalıştığınız anlamına gelmez.
-
-### Tarayıcı sekmeleri
-
-Ekran Takip, Chrome ve Edge sekmelerini Windows'un sağladığı pencere/erişilebilirlik bilgileri üzerinden **eklentisiz** okuyabilir. Bu yöntem bazı tarayıcı durumlarında sekme geçişlerini veya hiç seçilmemiş arka plan sekmelerinin tam adreslerini gösteremeyebilir.
-
-Daha kesin oluşturulma, seçilme ve kapanma bilgisi isterseniz `sekme-eklentisi` klasöründeki **isteğe bağlı** tarayıcı eklentisini kurabilirsiniz. Önce ana uygulamayı bir kez çalıştırın; bu bilgisayara ait bağlantı ayarı otomatik oluşur. Ardından Chrome veya Edge eklenti yönetiminde **Geliştirici modu → Paketlenmemiş öğe yükle** seçeneğiyle `sekme-eklentisi` klasörünü seçin. Eklenti bilgileri yalnızca bilgisayarınızdaki uygulamaya iletir; gizli pencereleri bilerek izlemez.
-
-Eklenti olmadan kullanılan Windows okuması, tarayıcı görünür hâle getiriyorsa gizli pencere başlıklarını okuyabilir. Gizli gezinmenin hiçbir şekilde kaydedilmediğini varsaymayın. Tarayıcı kapalıyken veya takip çalışmıyorken gerçekleşen olaylar sonradan eksiksiz oluşturulamaz.
-
-### Gizlilik ve verileriniz
-
-- Rapor sayfası yalnızca **bu bilgisayarda** `127.0.0.1:8777` adresinde dinler. Uygulama kayıtlarınızı bulut hesabına göndermez.
-- Kullanım kayıtları kurulum klasörünün `data` alt klasöründeki `veri.db` dosyasındadır. Çalışma sırasında `veri.db-wal` ve `veri.db-shm` yardımcı dosyaları oluşabilir. Program açıkken bu dosyaları silmeyin. Eski kurulumlarda kökteki kayıt dosyası da okunur.
-- `data/kimlik.json` şifrenizin açık metnini değil, doğrulamada kullanılan tuzlu özetini saklar. Rapor şifresi **veritabanını şifrelemez**: bilgisayarınızdaki kayıt dosyasına erişimi olan başka bir kullanıcı veya program içeriğini ayrıca okuyabilir.
-- İsteğe bağlı eklentinin yerel bağlantı anahtarı `sekme-eklentisi/ayar.json` dosyasındadır. Bu dosyayı veya günlükleri paylaşmayın.
-- Ziyaret edilen sayfaların başlıkları ve adresleri özel toplantı ya da hesap bağlantıları içerebilir. İndirdiğiniz Excel dosyalarını paylaşmadan önce gözden geçirin.
-- Ekrandaki hareketi anlamak için görüntünün çok küçük bir örneği karşılaştırılır; ekran görüntüsü dosyaya kaydedilmez.
-
-Şifreyi unutursanız e-posta ile kurtarma yoktur. `data/kimlik.json` dosyasını silmek yeni şifre oluşturma ekranını açar ve `data/veri.db` içindeki kullanım kayıtlarını silmez. Eski kurulumunuz hâlâ kökteki dosyaları kullanıyorsa o konumları esas alın. Bu nedenle bilgisayardaki dosya erişim izinleri önemlidir.
-
-### Yedekleme, güncelleme ve kaldırma
-
-**Yedekleme:** `kaldir.bat` dosyasını çalıştırıp uygulamanın güvenle kapandığını doğrulayın. Sonra `data/veri.db`, `data/kimlik.json` ve eklenti kullanıyorsanız `sekme-eklentisi/ayar.json` dosyalarını güvenli bir yere kopyalayın. Eski kurulumunuz hâlâ kökteki kayıt dosyalarını kullanıyorsa onları kopyalayın. Uygulama açıkken yalnızca ana veritabanı dosyasını kopyalamak son kayıtları kaçırabilir. Takibi yeniden başlatmak için `kur.bat` dosyasını çalıştırın.
-
-**Güncelleme:** Önce `kaldir.bat` ile uygulamayı güvenle durdurup yedek alın. Yeni kod dosyalarını mevcut klasöre aktarırken `data` klasörünün ve `sekme-eklentisi/ayar.json` dosyasının üzerine yazmayın. Eski kurulumdan kalan kök `veri.db` ve `kimlik.json` dosyalarını da koruyun. Sonra `kur.bat` dosyasını çalıştırarak yeni sürümü başlatın. Yeni bir klasöre geçiyorsanız kayıt dosyalarını eski kurulum kapalıyken taşıyın; iki kopyayı aynı anda çalıştırmayın.
-
-**Kaldırma:** `kaldir.bat` otomatik başlamayı kaldırır ve uygulamayı kapatır; kişisel kayıtlarınızı silmez. Tamamen kaldırmadan önce verilerinizi yedekleyin. Uygulamanın güvenle kapanamadığına dair uyarı varsa klasörü silmeyin.
-
-### Teknik ayrıntılar
-
-Bu bölüm, kaynak kodunu incelemek veya geliştirmek isteyenler içindir.
-
-- Takip programı yaklaşık **iki saniyede bir** açık pencereleri ölçer. Kısa aralıklı durum değişimlerinin saatleri bu yüzden yaklaşık olabilir. Uyku veya beklenmedik kapanış sırasında kesin bitiş saati bilinemeyebilir.
-- Klavye/fare hareketi yokken ekrandaki hareket de aralıklarla denetlenir. Yaklaşık **on dakika** boyunca etkinlik algılanmazsa bilgisayar boşta sayılır. Ölçüm aralığı ve eşikler `app/takip.py` dosyasının başındaki ayarlardır.
-- Kayıtlar yerel bir SQLite veritabanında tutulur. Rapor için tarayıcıda çalışan yerel bir arayüz, Excel çıktısı için `openpyxl`, Windows erişilebilirlik okuması için `comtypes` kullanılır. Paket listesi `requirements.txt` dosyasındadır.
-- Klasörler: `app` (uygulama kodu), `data` (kişisel kayıtlar), `logs` (çalışma günlükleri), `backups` (yerel yedekler), `sekme-eklentisi` (isteğe bağlı tarayıcı desteği). Üstteki `takip.py` otomatik başlangıcın sabit girişidir; ölçüm döngüsü `app/takip.py` içindedir. `kur.py` kurulum ve otomatik açılışı yönetir.
-- Proje diğer işletim sistemlerinde denenmemiştir.
-
-**Bilinen sınırlar:** Pencere örtüşmesi dikdörtgen alanlar üzerinden yaklaşık hesaplanır; şeffaf veya alışılmadık pencerelerde sapma olabilir. Bazı tam ekran oyunlar pencere başlığını sağlamaz. Her tarayıcı, sekme bilgisini Windows üzerinden aynı ayrıntıda sunmaz.
-
-**Herkese açık paylaşım notu:** `.gitignore` yerel kayıtları, günlükleri, şifre/eklenti ayarlarını ve çalışma ortamını kaynak kodu paketinin dışında tutmak için hazırlanmıştır. Yine de GitHub'a dosya göndermeden önce gönderilecek dosyaları elle kontrol edin; bu liste önceden eklenmiş dosyaları geriye dönük olarak kaldırmaz.
+[🇬🇧 English](#english) · [🇹🇷 Türkçe](#turkce)
 
 ---
 
@@ -182,3 +95,90 @@ This section is for people who want to inspect or develop the source code.
 **Known limits:** Window occlusion is estimated with rectangles, so transparent or unusual windows can differ from what you perceive. Some fullscreen games do not expose a window title. Browsers vary in how much tab information they expose through Windows.
 
 **Before making the repository public:** `.gitignore` is intended to exclude local records, logs, password/extension settings, and the working environment from source control. Still inspect the actual files you are about to upload: ignore rules do not retroactively remove files that were already added.
+
+---
+
+<a id="turkce"></a>
+## 🇹🇷 Türkçe
+
+### Ekran Takip ne işe yarar?
+
+“Bugün bilgisayarı kaç saat kullandım?” sorusu çoğu zaman yeterli değildir. Asıl merak edilen, bu sürenin **hangi uygulamalara, sitelere ve sayfalara dağıldığıdır**. Ekran Takip, Windows bilgisayarınızda açık pencereleri ve tarayıcı sekmelerini izleyerek bunu anlaşılır bir rapora dönüştürür.
+
+Örneğin gün sonunda bir uygulamanın ne kadar süre seçili kaldığını, bir toplantı sayfasının hangi saatlerde göründüğünü veya bir sekmenin ne zaman arka plana geçtiğini inceleyebilirsiniz. Zaman çizelgesi, tek bir toplam yerine gün içindeki değişimi gösterir. Tarayıcıdaki rapor sekmesini açık tutmanız gerekmez; takip ayrı bir program olarak çalışır.
+
+Bu proje **kişisel kullanım** içindir. Kayıtları çevrimiçi bir hesaba göndermez ve başka birinin bilgisayarını uzaktan izlemez.
+
+### Neler görebilirsiniz?
+
+- **Uygulamalar:** Hangi program ne kadar kullanılmış, ekranda görünmüş, başka pencerelerin altında kalmış veya simge durumuna küçültülmüş?
+- **Sayfalar ve siteler:** Tarayıcıda hangi sayfa ve site ne kadar süreyle görülmüş? Desteklenen durumlarda sekmeler arası geçiş ve arka planda kalma süreleri de gösterilir.
+- **Zaman çizelgesi:** Uygulama veya sekmenin durumunun gün içinde ne zaman değiştiği. Böylece yalnızca “2 saat” değil, “hangi saat aralıklarında?” sorusuna da bakabilirsiniz.
+- **Esnek tarihler:** Bugün, dün, pazartesiden başlayan bu hafta, son yedi gün, bu ay, son üç ay, tüm kayıtlar veya seçtiğiniz iki tarih.
+- **Ayrıntılı Excel indirmesi:** Seçilen aralık için uygulama toplamları, uygulama içindeki sayfalar, gün ve saat ayrıntıları, sekme saatleri ve zaman çizelgesi ayrı çalışma sayfalarında yer alır.
+
+### Hızlı başlangıç
+
+**Gerekenler:** Windows, Python 3.11 veya üzeri ve ilk kurulumda gerekli paketleri indirmek için internet bağlantısı. Proje Python 3.11 ile geliştirilip denenmiştir. Yönetici izni gerekmez.
+
+1. GitHub üzerinde **Code → Download ZIP** seçeneğiyle kaynak dosyaları indirin ve kalıcı, yazma izniniz olan bir klasöre çıkarın. Kayıtlar da bu klasörde tutulacağı için klasörü kullanırken silmeyin veya taşımayın.
+2. Python kurulu değilse [resmî Windows indirme sayfasından](https://www.python.org/downloads/windows/) kurun.
+3. Çıkardığınız klasörde `kur.bat` dosyasını çift tıklayın. Gerekli paketler uygulamaya ait ayrı bir çalışma ortamına kurulur; takip başlar ve Windows hesabınızla oturum açtığınızda otomatik başlatılacak şekilde ayarlanır.
+4. Tarayıcıda `http://127.0.0.1:8777/` adresini açın. İlk girişte boş olmayan bir rapor şifresi oluşturun ve güvenli bir yerde saklayın.
+
+Sonraki günlerde raporu açmak için `raporu-ac.bat` dosyasını kullanabilirsiniz. Bu dosya yalnızca rapor sayfasını açar; takibi başlatmaz veya kurmaz. Bilgisayar yeniden açıldığında takip, **Windows hesabınızla oturum açmanızın ardından** otomatik başlar. Rapor sekmesinin açık kalması gerekmez.
+
+Sayfa açılmıyorsa kurulum klasörünün `logs` alt klasöründeki `baslatma.log`, `calisma.log` ve `hatalar.log` dosyalarını kontrol edin. Hata paylaşırken dosya yollarınızı ve ziyaret ettiğiniz adresleri gizleyin.
+
+### Süreler nasıl okunur?
+
+| Rapordaki ad | Anlamı |
+| --- | --- |
+| Aktif kullanım | O anda seçili olan pencerenin süresi. Her saniye fare veya klavye hareketi yapmanız gerekmez. |
+| Ekranda görünür | Pencerenin ekranda görüldüğü süre. Birden fazla pencere aynı anda görünüyorsa hepsine süre yazılabilir. |
+| Üstü kapalı | Pencere açıktır, fakat başka pencerelerin altında veya ekranın dışında kalmıştır. |
+| Simge durumunda | Pencere görev çubuğuna küçültülmüştür. |
+| Boşta | Uzun süre klavye, fare veya ekran hareketi algılanmazsa kullanım sayımı durur. Kilitli veya uyuyan bilgisayarda süre sayılmaz. |
+
+**Önemli:** Görünür pencere sürelerinin toplamı, aynı anda birden fazla pencere görülebildiği için geçen gerçek zamandan büyük olabilir. Hareketli video genellikle bilgisayarın boşta sayılmasını önler; bu, videonun başında aktif olarak çalıştığınız anlamına gelmez.
+
+### Tarayıcı sekmeleri
+
+Ekran Takip, Chrome ve Edge sekmelerini Windows'un sağladığı pencere/erişilebilirlik bilgileri üzerinden **eklentisiz** okuyabilir. Bu yöntem bazı tarayıcı durumlarında sekme geçişlerini veya hiç seçilmemiş arka plan sekmelerinin tam adreslerini gösteremeyebilir.
+
+Daha kesin oluşturulma, seçilme ve kapanma bilgisi isterseniz `sekme-eklentisi` klasöründeki **isteğe bağlı** tarayıcı eklentisini kurabilirsiniz. Önce ana uygulamayı bir kez çalıştırın; bu bilgisayara ait bağlantı ayarı otomatik oluşur. Ardından Chrome veya Edge eklenti yönetiminde **Geliştirici modu → Paketlenmemiş öğe yükle** seçeneğiyle `sekme-eklentisi` klasörünü seçin. Eklenti bilgileri yalnızca bilgisayarınızdaki uygulamaya iletir; gizli pencereleri bilerek izlemez.
+
+Eklenti olmadan kullanılan Windows okuması, tarayıcı görünür hâle getiriyorsa gizli pencere başlıklarını okuyabilir. Gizli gezinmenin hiçbir şekilde kaydedilmediğini varsaymayın. Tarayıcı kapalıyken veya takip çalışmıyorken gerçekleşen olaylar sonradan eksiksiz oluşturulamaz.
+
+### Gizlilik ve verileriniz
+
+- Rapor sayfası yalnızca **bu bilgisayarda** `127.0.0.1:8777` adresinde dinler. Uygulama kayıtlarınızı bulut hesabına göndermez.
+- Kullanım kayıtları kurulum klasörünün `data` alt klasöründeki `veri.db` dosyasındadır. Çalışma sırasında `veri.db-wal` ve `veri.db-shm` yardımcı dosyaları oluşabilir. Program açıkken bu dosyaları silmeyin. Eski kurulumlarda kökteki kayıt dosyası da okunur.
+- `data/kimlik.json` şifrenizin açık metnini değil, doğrulamada kullanılan tuzlu özetini saklar. Rapor şifresi **veritabanını şifrelemez**: bilgisayarınızdaki kayıt dosyasına erişimi olan başka bir kullanıcı veya program içeriğini ayrıca okuyabilir.
+- İsteğe bağlı eklentinin yerel bağlantı anahtarı `sekme-eklentisi/ayar.json` dosyasındadır. Bu dosyayı veya günlükleri paylaşmayın.
+- Ziyaret edilen sayfaların başlıkları ve adresleri özel toplantı ya da hesap bağlantıları içerebilir. İndirdiğiniz Excel dosyalarını paylaşmadan önce gözden geçirin.
+- Ekrandaki hareketi anlamak için görüntünün çok küçük bir örneği karşılaştırılır; ekran görüntüsü dosyaya kaydedilmez.
+
+Şifreyi unutursanız e-posta ile kurtarma yoktur. `data/kimlik.json` dosyasını silmek yeni şifre oluşturma ekranını açar ve `data/veri.db` içindeki kullanım kayıtlarını silmez. Eski kurulumunuz hâlâ kökteki dosyaları kullanıyorsa o konumları esas alın. Bu nedenle bilgisayardaki dosya erişim izinleri önemlidir.
+
+### Yedekleme, güncelleme ve kaldırma
+
+**Yedekleme:** `kaldir.bat` dosyasını çalıştırıp uygulamanın güvenle kapandığını doğrulayın. Sonra `data/veri.db`, `data/kimlik.json` ve eklenti kullanıyorsanız `sekme-eklentisi/ayar.json` dosyalarını güvenli bir yere kopyalayın. Eski kurulumunuz hâlâ kökteki kayıt dosyalarını kullanıyorsa onları kopyalayın. Uygulama açıkken yalnızca ana veritabanı dosyasını kopyalamak son kayıtları kaçırabilir. Takibi yeniden başlatmak için `kur.bat` dosyasını çalıştırın.
+
+**Güncelleme:** Önce `kaldir.bat` ile uygulamayı güvenle durdurup yedek alın. Yeni kod dosyalarını mevcut klasöre aktarırken `data` klasörünün ve `sekme-eklentisi/ayar.json` dosyasının üzerine yazmayın. Eski kurulumdan kalan kök `veri.db` ve `kimlik.json` dosyalarını da koruyun. Sonra `kur.bat` dosyasını çalıştırarak yeni sürümü başlatın. Yeni bir klasöre geçiyorsanız kayıt dosyalarını eski kurulum kapalıyken taşıyın; iki kopyayı aynı anda çalıştırmayın.
+
+**Kaldırma:** `kaldir.bat` otomatik başlamayı kaldırır ve uygulamayı kapatır; kişisel kayıtlarınızı silmez. Tamamen kaldırmadan önce verilerinizi yedekleyin. Uygulamanın güvenle kapanamadığına dair uyarı varsa klasörü silmeyin.
+
+### Teknik ayrıntılar
+
+Bu bölüm, kaynak kodunu incelemek veya geliştirmek isteyenler içindir.
+
+- Takip programı yaklaşık **iki saniyede bir** açık pencereleri ölçer. Kısa aralıklı durum değişimlerinin saatleri bu yüzden yaklaşık olabilir. Uyku veya beklenmedik kapanış sırasında kesin bitiş saati bilinemeyebilir.
+- Klavye/fare hareketi yokken ekrandaki hareket de aralıklarla denetlenir. Yaklaşık **on dakika** boyunca etkinlik algılanmazsa bilgisayar boşta sayılır. Ölçüm aralığı ve eşikler `app/takip.py` dosyasının başındaki ayarlardır.
+- Kayıtlar yerel bir SQLite veritabanında tutulur. Rapor için tarayıcıda çalışan yerel bir arayüz, Excel çıktısı için `openpyxl`, Windows erişilebilirlik okuması için `comtypes` kullanılır. Paket listesi `requirements.txt` dosyasındadır.
+- Klasörler: `app` (uygulama kodu), `data` (kişisel kayıtlar), `logs` (çalışma günlükleri), `backups` (yerel yedekler), `sekme-eklentisi` (isteğe bağlı tarayıcı desteği). Üstteki `takip.py` otomatik başlangıcın sabit girişidir; ölçüm döngüsü `app/takip.py` içindedir. `kur.py` kurulum ve otomatik açılışı yönetir.
+- Proje diğer işletim sistemlerinde denenmemiştir.
+
+**Bilinen sınırlar:** Pencere örtüşmesi dikdörtgen alanlar üzerinden yaklaşık hesaplanır; şeffaf veya alışılmadık pencerelerde sapma olabilir. Bazı tam ekran oyunlar pencere başlığını sağlamaz. Her tarayıcı, sekme bilgisini Windows üzerinden aynı ayrıntıda sunmaz.
+
+**Herkese açık paylaşım notu:** `.gitignore` yerel kayıtları, günlükleri, şifre/eklenti ayarlarını ve çalışma ortamını kaynak kodu paketinin dışında tutmak için hazırlanmıştır. Yine de GitHub'a dosya göndermeden önce gönderilecek dosyaları elle kontrol edin; bu liste önceden eklenmiş dosyaları geriye dönük olarak kaldırmaz.
