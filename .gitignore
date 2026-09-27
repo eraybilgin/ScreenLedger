@@ -20,6 +20,9 @@ tests/
 
 # Yerel kurulum ve Python geçici dosyaları
 .venv/
+.build-venv/
+.build-tools/
+release/
 __pycache__/
 *.py[cod]
 .pytest_cache/

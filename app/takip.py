@@ -19,6 +19,9 @@ import sys
 import time
 import threading
 import traceback
+import subprocess
+import urllib.request
+import webbrowser
 from datetime import datetime
 
 BURASI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,6 +31,7 @@ if UYGULAMA_KLASORU in sys.path:
 sys.path.insert(0, UYGULAMA_KLASORU)
 
 from yollar import VERITABANI, DURDUR_ISARETI, EKLENTI_AYARI, GUNLUK_KLASORU
+from yollar import KOK
 import pencere
 import hareket
 import adres
@@ -50,6 +54,7 @@ URL_KAYDET = True          # tarayicidaki sayfa adresi de kaydedilsin mi
 URL_ONBELLEK_SINIRI = 400  # adres hafizasinda tutulacak en fazla pencere sayisi
 
 WEB_PORTU = 8777           # tarayicidan bakarken kullanilacak kapi numarasi
+MUTEX_ADI = "Global\\EkranTakip_TekKopya"
 
 # =====================================================================
 
@@ -368,9 +373,59 @@ def tek_kopya_mi():
     (mutex = 'bu is zaten yapiliyor' bayragi). Ikinci kopya acilirsa False doner.
     """
     kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    kernel32.CreateMutexW(None, False, "Global\\EkranTakip_TekKopya")
+    kernel32.CreateMutexW(None, False, MUTEX_ADI)
     ERROR_ALREADY_EXISTS = 183
     return ctypes.get_last_error() != ERROR_ALREADY_EXISTS
+
+
+def calisiyor_mu():
+    """Kurucuya çalışan kopya olup olmadığını kayıtları açmadan bildir."""
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.OpenMutexW.restype = ctypes.c_void_p
+    kernel32.OpenMutexW.argtypes = (ctypes.c_ulong, ctypes.c_int, ctypes.c_wchar_p)
+    isaret = kernel32.OpenMutexW(0x00100000, False, MUTEX_ADI)
+    if not isaret:
+        return False
+    kernel32.CloseHandle(ctypes.c_void_p(isaret))
+    return True
+
+
+def guvenle_durdur():
+    """Kurulum veya kaldırma öncesi yazma tamponunu boşaltarak kapat."""
+    if not calisiyor_mu():
+        return 0
+    os.makedirs(os.path.dirname(DURDUR_ISARETI), exist_ok=True)
+    with open(DURDUR_ISARETI, "w", encoding="ascii") as dosya:
+        dosya.write("dur\n")
+    son = time.monotonic() + 20
+    while calisiyor_mu() and time.monotonic() < son:
+        time.sleep(0.25)
+    if calisiyor_mu():
+        try:
+            os.remove(DURDUR_ISARETI)
+        except FileNotFoundError:
+            pass
+        return 2
+    return 0
+
+
+def raporu_ac():
+    """Takip kapalıysa başlatıp yerel raporu varsayılan tarayıcıda aç."""
+    if not calisiyor_mu():
+        komut = ([sys.executable] if getattr(sys, "frozen", False)
+                 else [sys.executable, str(KOK / "takip.py")])
+        subprocess.Popen(komut, cwd=str(KOK), close_fds=True)
+    adres = "http://127.0.0.1:%s/" % WEB_PORTU
+    son = time.monotonic() + 20
+    while time.monotonic() < son:
+        try:
+            with urllib.request.urlopen(adres, timeout=1) as cevap:
+                if cevap.status == 200:
+                    webbrowser.open(adres)
+                    return 0
+        except OSError:
+            time.sleep(0.3)
+    return 3
 
 
 def main():
@@ -414,6 +469,17 @@ def _calisma_kaydi(mesaj):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        secenek = sys.argv[1]
+        if secenek == "--stop":
+            sys.exit(guvenle_durdur())
+        if secenek == "--open-report":
+            sys.exit(raporu_ac())
+        if secenek == "--self-test":
+            import arayuz
+            import excel_rapor
+            import comtypes.client
+            sys.exit(0)
     _calisma_kaydi("BASLADI pid=%s" % os.getpid())
     try:
         main()
