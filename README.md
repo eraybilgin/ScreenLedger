@@ -90,7 +90,7 @@ Bu bölüm, kaynak kodunu incelemek veya geliştirmek isteyenler içindir.
 - Klavye/fare hareketi yokken ekrandaki hareket de aralıklarla denetlenir. Yaklaşık **on dakika** boyunca etkinlik algılanmazsa bilgisayar boşta sayılır. Ölçüm aralığı ve eşikler `takip.py` dosyasının başındaki ayarlardır.
 - Kayıtlar yerel bir SQLite veritabanında tutulur. Rapor için tarayıcıda çalışan yerel bir arayüz, Excel çıktısı için `openpyxl`, Windows erişilebilirlik okuması için `comtypes` kullanılır. Paket listesi `requirements.txt` dosyasındadır.
 - Başlıca dosyalar: `takip.py` (ölçüm döngüsü), `depo.py` (kayıt saklama), `arayuz.py` (yerel rapor), `excel_rapor.py` (Excel çıktısı), `kimlik.py` (rapor girişi), `kur.py` (kurulum/otomatik başlangıç) ve `sekme-eklentisi` (isteğe bağlı tarayıcı desteği).
-- Kaynak kodunda değişiklik yapıyorsanız temel denemeleri `py -3 -m unittest test_kurulum test_kimlik test_zaman test_sekme_windows` komutuyla çalıştırabilirsiniz. Excel denemesi için `py -3 test_excel_rapor.py` kullanılabilir. Proje diğer işletim sistemlerinde denenmemiştir.
+- Proje diğer işletim sistemlerinde denenmemiştir.
 
 **Bilinen sınırlar:** Pencere örtüşmesi dikdörtgen alanlar üzerinden yaklaşık hesaplanır; şeffaf veya alışılmadık pencerelerde sapma olabilir. Bazı tam ekran oyunlar pencere başlığını sağlamaz. Her tarayıcı, sekme bilgisini Windows üzerinden aynı ayrıntıda sunmaz.
 
@@ -177,7 +177,7 @@ This section is for people who want to inspect or develop the source code.
 - When keyboard/mouse input stops, screen motion is checked periodically too. The computer is considered idle after roughly **ten minutes** without detected activity. Sampling and idle thresholds are defined near the top of `takip.py`.
 - Records live in a local SQLite database. The report is served by a local browser interface; `openpyxl` creates Excel files, and `comtypes` reads Windows accessibility information. Dependencies are listed in `requirements.txt`.
 - Main files: `takip.py` (sampling loop), `depo.py` (storage), `arayuz.py` (local report), `excel_rapor.py` (Excel export), `kimlik.py` (report authentication), `kur.py` (setup and startup), and `sekme-eklentisi` (optional browser integration).
-- Run the core tests with `py -3 -m unittest test_kurulum test_kimlik test_zaman test_sekme_windows`. The Excel test can be run with `py -3 test_excel_rapor.py`. Other operating systems have not been tested.
+- Other operating systems have not been tested.
 
 **Known limits:** Window occlusion is estimated with rectangles, so transparent or unusual windows can differ from what you perceive. Some fullscreen games do not expose a window title. Browsers vary in how much tab information they expose through Windows.
 
