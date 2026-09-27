@@ -9,15 +9,15 @@ Bilgisayar başında zamanınızın nereye gittiğini, yalnızca günlük toplam
 
 ### Preview gallery / Örnek görseller
 
-Illustrative mockups with entirely fictional data; these are **not** captures from a running installation.
+Screenshots of the actual interface, populated only with fictional example records. No personal activity data is shown. Two examples are in English and two in Turkish.
 
-Tamamı uydurma verilerle hazırlanmış temsili görsellerdir; çalışan uygulamadan alınmış **gerçek ekran görüntüleri değildir**.
+Gerçek arayüzün yalnızca uydurma örnek kayıtlarla alınmış ekran görüntüleridir; kişisel kullanım verisi içermez. İki örnek İngilizce, iki örnek Türkçedir.
 
-![General fictional activity example](docs/screenshots/ornek-genel.png)
+![Actual Turkish interface with fictional general activity](docs/screenshots/ornek-genel.png)
 
-| Architecture / Mimarlık | Software / Yazılım | Design / Tasarım |
+| Architecture / Mimarlık (TR) | Software / Yazılım (EN) | Design / Tasarım (EN) |
 | :---: | :---: | :---: |
-| ![Fictional architect workday](docs/screenshots/ornek-mimar.png) | ![Fictional software developer workday](docs/screenshots/ornek-yazilim.png) | ![Fictional designer workday](docs/screenshots/ornek-tasarim.png) |
+| ![Actual Turkish interface with fictional architect activity](docs/screenshots/ornek-mimar.png) | ![Actual English interface with fictional software developer activity](docs/screenshots/ornek-yazilim.png) | ![Actual English interface with fictional designer activity](docs/screenshots/ornek-tasarim.png) |
 
 [🇬🇧 English](#english) · [🇹🇷 Türkçe](#turkce)
 
