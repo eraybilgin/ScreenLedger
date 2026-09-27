@@ -1,0 +1,25 @@
+# Kullanıcıya ait çalışma verileri ve yedekler
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.log
+*.xlsx
+*.xls
+*.csv
+yedek-*/
+yedek-zaman-*/
+kimlik.json
+sekme-eklentisi/ayar.json
+baslat.vbs
+durdur.isaret
+
+# Yerel kurulum ve Python geçici dosyaları
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+build/
+dist/
